@@ -1,0 +1,11 @@
+.ui {
+    display:flex;
+    flex-direction: row;
+    gap:30px;
+}
+
+.boardOne, .boardTwo {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(20px, 1fr));
+    grid-template-rows: repeat(10, minmax(20px, 1fr));
+}
