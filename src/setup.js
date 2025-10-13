@@ -1,6 +1,4 @@
-import { dir } from 'console'
-
-export { Ship, Gameboard }
+export { Ship, Gameboard, Player }
 
 //ship factory to be instantiated at gameboard
 function Ship(shipSize) {
@@ -137,5 +135,15 @@ function Gameboard() {
         receiveAttack,
         checkIfAllSunk,
         getBoard,
+    }
+}
+
+function Player() {
+    const board = Gameboard()
+
+    return {
+        getPlayerBoard: board.getBoard,
+        placeShip: board.placeShip,
+        receiveAttack: board.receiveAttack,
     }
 }
