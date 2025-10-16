@@ -13,45 +13,34 @@ function DOM() {
         userInterface.append(boardOne, boardTwo)
     }
 
+    function createBoard(board, boardDiv) {
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                const cell = document.createElement('div')
+                cell.setAttribute('row', i)
+                cell.setAttribute('column', j)
+                if (board[i][j] === null) {
+                    cell.textContent = ' '
+                } else if (board[i][j] === true) {
+                    cell.textContent = 'H'
+                } else if (board[i][j] === false) {
+                    cell.textContent = 'X'
+                } else {
+                    cell.textContent = 'S'
+                }
+                boardDiv.appendChild(cell)
+            }
+        }
+    }
+
     function renderGameboard(playerBoardOne, playerBoardTwo) {
         const boardOneDiv = document.querySelector('div.boardOne')
         const boardTwoDiv = document.querySelector('div.boardTwo')
 
-        for (let i = 0; i < playerBoardOne.length; i++) {
-            for (let j = 0; j < playerBoardOne[i].length; j++) {
-                const cell = document.createElement('button')
-                cell.setAttribute('row', i)
-                cell.setAttribute('column', j)
-                if (playerBoardOne[i][j] === null) {
-                    cell.textContent = ' '
-                } else if (playerBoardOne[i][j] === true) {
-                    cell.textContent = 'H'
-                } else if (playerBoardOne[i][j] === false) {
-                    cell.textContent = 'X'
-                } else {
-                    cell.textContent = 'S'
-                }
-                boardOneDiv.appendChild(cell)
-            }
-        }
-
-        for (let m = 0; m < playerBoardTwo.length; m++) {
-            for (let n = 0; n < playerBoardTwo[m].length; n++) {
-                const cell = document.createElement('button')
-                cell.setAttribute('row', m)
-                cell.setAttribute('column', n)
-                if (playerBoardTwo[m][n] === null) {
-                    cell.textContent = ' '
-                } else if (playerBoardTwo[m][n] === true) {
-                    cell.textContent = 'H'
-                } else if (playerBoardTwo[m][n] === false) {
-                    cell.textContent = 'X'
-                } else {
-                    cell.textContent = 'S'
-                }
-                boardTwoDiv.appendChild(cell)
-            }
-        }
+        boardOneDiv.textContent = ''
+        boardTwoDiv.textContent = ''
+        createBoard(playerBoardOne, boardOneDiv)
+        createBoard(playerBoardTwo, boardTwoDiv)
     }
 
     return {

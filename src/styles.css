@@ -9,3 +9,7 @@
     grid-template-columns: repeat(10, minmax(20px, 1fr));
     grid-template-rows: repeat(10, minmax(20px, 1fr));
 }
+
+.boardOne div, .boardTwo div {
+    border: 1px black solid;
+}
