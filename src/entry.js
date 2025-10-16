@@ -7,3 +7,4 @@ const play = GameplayControl()
 
 play.initialisePage()
 play.showGameboard()
+play.gameFlow()
