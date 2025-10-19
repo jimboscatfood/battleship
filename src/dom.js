@@ -1,7 +1,31 @@
 export { DOM }
 
 function DOM() {
+    const ships = [
+        {
+            shipName: 'Carrier',
+            size: 5,
+        },
+        {
+            shipName: 'Battleship',
+            size: 4,
+        },
+        {
+            shipName: 'Destroyer',
+            size: 3,
+        },
+        {
+            shipName: 'Submarine',
+            size: 3,
+        },
+        {
+            shipName: 'Patrol Boat',
+            size: 2,
+        },
+    ]
     function createUserInterface() {
+        document.body.textContent = ''
+
         const userInterface = document.createElement('div')
         userInterface.classList.add('ui')
         document.body.appendChild(userInterface)
@@ -11,6 +35,10 @@ function DOM() {
         const boardTwo = document.createElement('div')
         boardTwo.classList.add('boardTwo')
         userInterface.append(boardOne, boardTwo)
+
+        const userInputDiv = document.createElement('div')
+        userInputDiv.classList.add('userInput')
+        document.body.appendChild(userInputDiv)
     }
 
     function createBoard(board, boardDiv) {
@@ -33,6 +61,12 @@ function DOM() {
         }
     }
 
+    function setUpGameboard(playerBoardOne) {
+        const boardOneDiv = document.querySelector('div.boardOne')
+        boardOneDiv.textContent = ''
+        createBoard(playerBoardOne, boardOneDiv)
+    }
+
     function renderGameboard(playerBoardOne, playerBoardTwo) {
         const boardOneDiv = document.querySelector('div.boardOne')
         const boardTwoDiv = document.querySelector('div.boardTwo')
@@ -43,8 +77,140 @@ function DOM() {
         createBoard(playerBoardTwo, boardTwoDiv)
     }
 
+    function shipPlacementInput() {
+        const userInputDiv = document.querySelector('div.userInput')
+        const form = document.createElement('form')
+        userInputDiv.appendChild(form)
+
+        ships.forEach((ship, index) => {
+            const descriptionDiv = document.createElement('div')
+            descriptionDiv.setAttribute('shipNo', `${index}`)
+            const description = document.createElement('p')
+            description.textContent = `Ship: ${ship.shipName}, Ship size: ${ship.size}`
+
+            const xCoorField = document.createElement('p')
+            const xCoorLabel = document.createElement('label')
+            xCoorLabel.textContent = 'X Coordinate: '
+            const xCoorInput = document.createElement('input')
+            xCoorInput.type = 'tel'
+            xCoorInput.setAttribute('required', '')
+            xCoorField.append(xCoorLabel, xCoorInput)
+
+            const yCoorField = document.createElement('p')
+            const yCoorLabel = document.createElement('label')
+            yCoorLabel.textContent = 'Y Coordinate: '
+            const yCoorInput = document.createElement('input')
+            yCoorInput.type = 'tel'
+            yCoorInput.setAttribute('required', '')
+            yCoorField.append(yCoorLabel, yCoorInput)
+
+            const dirField = document.createElement('p')
+            const dirLabel = document.createElement('label')
+            dirLabel.textContent = 'Direction: '
+            const dirInput = document.createElement('select')
+            const optionX = document.createElement('option')
+            optionX.value = 'x'
+            optionX.textContent = 'Along X-axis'
+            const optionY = document.createElement('option')
+            optionY.value = 'y'
+            optionY.textContent = 'Along Y-axis'
+            dirInput.append(optionX, optionY)
+            dirField.append(dirLabel, dirInput)
+
+            descriptionDiv.append(description, xCoorField, yCoorField, dirField)
+            form.appendChild(descriptionDiv)
+        })
+        const okButton = document.createElement('input')
+        okButton.type = 'submit'
+        okButton.textContent = 'OK'
+        const resetButton = document.createElement('input')
+        resetButton.type = 'reset'
+
+        form.append(okButton, resetButton)
+    }
+
+    function checkValidPlacement(shipSize, xCoor, yCoor, direction) {
+        const previewBoard = document.querySelector('div.boardOne')
+        const firstCell = previewBoard.firstChild
+        const lastCell = previewBoard.lastChild
+        const xMin = parseInt(firstCell.getAttribute('column'))
+        const xMax = parseInt(lastCell.getAttribute('column'))
+        const yMin = parseInt(firstCell.getAttribute('row'))
+        const yMax = parseInt(lastCell.getAttribute('row'))
+        //first condition the starting coordinate of ship must be within the board
+        if (xCoor >= xMin && yCoor >= yMin) {
+            //second condition the whole ship is within the board
+            if (direction === 'x' && xCoor + shipSize <= xMax + 1) {
+                //third condition the ship must not overlap with existing ships
+                for (let i = 0; i < shipSize; i++) {
+                    const cell = previewBoard.querySelector(
+                        `[row='${yCoor}'][column='${xCoor + i}']`
+                    )
+                    if (cell.style.backgroundColor !== 'white') {
+                        return false
+                    }
+                }
+                return true
+            } else if (direction === 'y' && yCoor + shipSize <= yMax + 1) {
+                for (let j = 0; j < shipSize; j++) {
+                    const cell = previewBoard.querySelector(
+                        `[row='${yCoor + j}'][column='${xCoor}']`
+                    )
+                    if (cell.style.backgroundColor !== 'white') {
+                        return false
+                    }
+                }
+                return true
+            }
+        }
+    }
+
+    function updatePreview() {
+        const inputDivs = document.querySelectorAll('div.userInput div')
+        const previewBoardCells = document.querySelectorAll('div.boardOne>div')
+        previewBoardCells.forEach((cell) => {
+            cell.style.backgroundColor = 'white'
+        })
+        inputDivs.forEach((div) => {
+            const startX = parseInt(
+                div.querySelector('p:nth-child(2)>input').value
+            )
+            const startY = parseInt(
+                div.querySelector('p:nth-child(3)>input').value
+            )
+            const direction = div.querySelector('select').value
+
+            const shipSize = ships[div.getAttribute('shipNo')].size
+
+            if (
+                Number.isInteger(startX) &&
+                Number.isInteger(startY) &&
+                checkValidPlacement(shipSize, startX, startY, direction)
+            ) {
+                if (direction === 'x') {
+                    for (let i = 0; i < shipSize; i++) {
+                        const cell = document.querySelector(
+                            `div.boardOne>div[row='${startY}'][column='${startX + i}']`
+                        )
+                        cell.style.backgroundColor = 'yellow'
+                    }
+                } else if (direction === 'y') {
+                    for (let j = 0; j < shipSize; j++) {
+                        const cell = document.querySelector(
+                            `div.boardOne>div[row='${startY + j}'][column='${startX}']`
+                        )
+                        cell.style.backgroundColor = 'yellow'
+                    }
+                }
+            }
+        })
+    }
+
     return {
         createUserInterface,
         renderGameboard,
+        shipPlacementInput,
+        setUpGameboard,
+        updatePreview,
     }
 }

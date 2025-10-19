@@ -23,6 +23,13 @@ function GameplayControl(playerName = 'Jimmy') {
 
     function initialisePage() {
         domControl.createUserInterface()
+        domControl.setUpGameboard(playerOne.getPlayerBoard())
+        domControl.shipPlacementInput()
+    }
+
+    function updatePreviewBoard() {
+        const inputDiv = document.querySelector('div.userInput')
+        inputDiv.addEventListener('change', domControl.updatePreview)
     }
 
     function showGameboard() {
@@ -95,5 +102,6 @@ function GameplayControl(playerName = 'Jimmy') {
         initialisePage,
         showGameboard,
         gameFlow,
+        updatePreviewBoard,
     }
 }

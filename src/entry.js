@@ -6,5 +6,6 @@ import { GameplayControl } from './gameplay'
 const play = GameplayControl()
 
 play.initialisePage()
-play.showGameboard()
+play.updatePreviewBoard()
+// play.showGameboard()
 play.gameFlow()
