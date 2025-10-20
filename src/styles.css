@@ -4,12 +4,22 @@
     gap:30px;
 }
 
-.boardOne, .boardTwo {
+.previewBoard {
     display: grid;
-    grid-template-columns: repeat(10, minmax(20px, 1fr));
-    grid-template-rows: repeat(10, minmax(20px, 1fr));
+    grid-template-columns: repeat(10, minmax(50px, 1fr));
+    grid-template-rows: repeat(10, minmax(50px, 1fr));
 }
 
-.boardOne div, .boardTwo div {
+.boardOne, .boardTwo {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(30px, 1fr));
+    grid-template-rows: repeat(10, minmax(30px, 1fr));
+}
+
+.boardOne div, .boardTwo div, .previewBoard div {
     border: 1px black solid;
+}
+
+.ship {
+    background-color: purple;
 }

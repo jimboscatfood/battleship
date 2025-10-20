@@ -23,18 +23,12 @@ function DOM() {
             size: 2,
         },
     ]
-    function createUserInterface() {
+    function createStartingPage() {
         document.body.textContent = ''
 
         const userInterface = document.createElement('div')
         userInterface.classList.add('ui')
         document.body.appendChild(userInterface)
-
-        const boardOne = document.createElement('div')
-        boardOne.classList.add('boardOne')
-        const boardTwo = document.createElement('div')
-        boardTwo.classList.add('boardTwo')
-        userInterface.append(boardOne, boardTwo)
 
         const userInputDiv = document.createElement('div')
         userInputDiv.classList.add('userInput')
@@ -61,13 +55,28 @@ function DOM() {
         }
     }
 
-    function setUpGameboard(playerBoardOne) {
-        const boardOneDiv = document.querySelector('div.boardOne')
-        boardOneDiv.textContent = ''
-        createBoard(playerBoardOne, boardOneDiv)
+    function setUpPreview(previewBoard) {
+        const userInterface = document.querySelector('div.ui')
+        const previewBoardDiv = document.createElement('div')
+        previewBoardDiv.classList.add('previewBoard')
+        userInterface.textContent = ''
+        userInterface.appendChild(previewBoardDiv)
+
+        createBoard(previewBoard, previewBoardDiv)
     }
 
-    function renderGameboard(playerBoardOne, playerBoardTwo) {
+    function createPlayerBoards() {
+        const userInterface = document.querySelector('div.ui')
+        const previewBoard = document.querySelector('div.previewBoard')
+        previewBoard.remove()
+        const boardOne = document.createElement('div')
+        boardOne.classList.add('boardOne')
+        const boardTwo = document.createElement('div')
+        boardTwo.classList.add('boardTwo')
+        userInterface.append(boardOne, boardTwo)
+    }
+
+    function renderGameboards(playerBoardOne, playerBoardTwo) {
         const boardOneDiv = document.querySelector('div.boardOne')
         const boardTwoDiv = document.querySelector('div.boardTwo')
 
@@ -77,7 +86,7 @@ function DOM() {
         createBoard(playerBoardTwo, boardTwoDiv)
     }
 
-    function shipPlacementInput() {
+    function addInputDOM() {
         const userInputDiv = document.querySelector('div.userInput')
         const form = document.createElement('form')
         userInputDiv.appendChild(form)
@@ -130,7 +139,7 @@ function DOM() {
     }
 
     function checkValidPlacement(shipSize, xCoor, yCoor, direction) {
-        const previewBoard = document.querySelector('div.boardOne')
+        const previewBoard = document.querySelector('div.previewBoard')
         const firstCell = previewBoard.firstChild
         const lastCell = previewBoard.lastChild
         const xMin = parseInt(firstCell.getAttribute('column'))
@@ -146,7 +155,7 @@ function DOM() {
                     const cell = previewBoard.querySelector(
                         `[row='${yCoor}'][column='${xCoor + i}']`
                     )
-                    if (cell.style.backgroundColor !== 'white') {
+                    if (cell.classList.contains('ship')) {
                         return false
                     }
                 }
@@ -156,7 +165,7 @@ function DOM() {
                     const cell = previewBoard.querySelector(
                         `[row='${yCoor + j}'][column='${xCoor}']`
                     )
-                    if (cell.style.backgroundColor !== 'white') {
+                    if (cell.classList.contains('ship')) {
                         return false
                     }
                 }
@@ -167,9 +176,11 @@ function DOM() {
 
     function updatePreview() {
         const inputDivs = document.querySelectorAll('div.userInput div')
-        const previewBoardCells = document.querySelectorAll('div.boardOne>div')
+        const previewBoardCells = document.querySelectorAll(
+            'div.previewBoard>div'
+        )
         previewBoardCells.forEach((cell) => {
-            cell.style.backgroundColor = 'white'
+            cell.classList.remove('ship')
         })
         inputDivs.forEach((div) => {
             const startX = parseInt(
@@ -190,16 +201,16 @@ function DOM() {
                 if (direction === 'x') {
                     for (let i = 0; i < shipSize; i++) {
                         const cell = document.querySelector(
-                            `div.boardOne>div[row='${startY}'][column='${startX + i}']`
+                            `div.previewBoard>div[row='${startY}'][column='${startX + i}']`
                         )
-                        cell.style.backgroundColor = 'yellow'
+                        cell.classList.add('ship')
                     }
                 } else if (direction === 'y') {
                     for (let j = 0; j < shipSize; j++) {
                         const cell = document.querySelector(
-                            `div.boardOne>div[row='${startY + j}'][column='${startX}']`
+                            `div.previewBoard>div[row='${startY + j}'][column='${startX}']`
                         )
-                        cell.style.backgroundColor = 'yellow'
+                        cell.classList.add('ship')
                     }
                 }
             }
@@ -207,10 +218,11 @@ function DOM() {
     }
 
     return {
-        createUserInterface,
-        renderGameboard,
-        shipPlacementInput,
-        setUpGameboard,
+        createStartingPage,
+        createPlayerBoards,
+        renderGameboards,
+        addInputDOM,
+        setUpPreview,
         updatePreview,
     }
 }

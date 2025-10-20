@@ -1,9 +1,10 @@
 import { DOM } from './dom'
-import { Player } from './setup'
+import { Player, Gameboard } from './setup'
 export { GameplayControl }
 
 function GameplayControl(playerName = 'Jimmy') {
     const domControl = DOM()
+    const previewBoard = Gameboard()
     const playerOne = Player()
     const playerTwo = Player()
 
@@ -22,9 +23,9 @@ function GameplayControl(playerName = 'Jimmy') {
     let turn = players[0]
 
     function initialisePage() {
-        domControl.createUserInterface()
-        domControl.setUpGameboard(playerOne.getPlayerBoard())
-        domControl.shipPlacementInput()
+        domControl.createStartingPage()
+        domControl.setUpPreview(previewBoard.getBoard())
+        domControl.addInputDOM()
     }
 
     function updatePreviewBoard() {
