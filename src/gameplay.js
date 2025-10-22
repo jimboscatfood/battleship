@@ -6,6 +6,7 @@ function GameplayControl(playerName = 'Jimmy') {
     const domControl = DOM()
     const previewBoard = Gameboard()
     const playerOne = Player()
+    const ships = playerOne.getShips()
     const playerTwo = Player()
 
     const players = {
@@ -33,12 +34,39 @@ function GameplayControl(playerName = 'Jimmy') {
         inputDiv.addEventListener('change', domControl.updatePreview)
     }
 
-    function showGameboard() {
-        //
-        playerOne.placeShip(5, [0, 0], 'y')
-        playerTwo.placeShip(5, [2, 4], 'x')
+    function gameStart() {
+        const startBtn = document.querySelector("button[type='submit']")
+        startBtn.addEventListener('click', (e) => {
+            const sumOfShipSize = ships.reduce((sum, cur) => sum + cur.size, 0)
+            const shipCells = document.querySelectorAll(
+                'div.previewBoard>div.ship'
+            )
+            const userInputs = document.querySelectorAll('div.userInput>div')
+            if (shipCells.length === sumOfShipSize) {
+                e.preventDefault()
+                userInputs.forEach((div) => {
+                    const shipSize = ships[div.getAttribute('shipNo')].size
+                    const startX = parseInt(
+                        div.querySelector('p:nth-child(2)>input').value
+                    )
+                    const startY = parseInt(
+                        div.querySelector('p:nth-child(3)>input').value
+                    )
+                    const direction = div.querySelector('select').value
+                    playerOne.placeShip(shipSize, [startX, startY], direction)
+                })
+                playerTwo.setRandomBoard()
+                domControl.createPlayerBoards()
+                showGameboards()
+                gameFlow()
+            } else {
+                return false
+            }
+        })
+    }
 
-        domControl.renderGameboard(
+    function showGameboards() {
+        domControl.renderGameboards(
             playerOne.getPlayerBoard(),
             playerTwo.getPlayerBoard()
         )
@@ -78,13 +106,13 @@ function GameplayControl(playerName = 'Jimmy') {
                 targetCell.getAttribute('row'),
             ]
             playerTwo.receiveAttack(targetCellCoor)
-            domControl.renderGameboard(
+            domControl.renderGameboards(
                 playerOne.getPlayerBoard(),
                 playerTwo.getPlayerBoard()
             )
             switchTurn()
             playerOne.receiveAttack(getRandomCoor())
-            domControl.renderGameboard(
+            domControl.renderGameboards(
                 playerOne.getPlayerBoard(),
                 playerTwo.getPlayerBoard()
             )
@@ -101,8 +129,9 @@ function GameplayControl(playerName = 'Jimmy') {
 
     return {
         initialisePage,
-        showGameboard,
+        showGameboards,
         gameFlow,
         updatePreviewBoard,
+        gameStart,
     }
 }

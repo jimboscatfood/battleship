@@ -1,28 +1,10 @@
 export { DOM }
+import { Player } from './setup'
 
 function DOM() {
-    const ships = [
-        {
-            shipName: 'Carrier',
-            size: 5,
-        },
-        {
-            shipName: 'Battleship',
-            size: 4,
-        },
-        {
-            shipName: 'Destroyer',
-            size: 3,
-        },
-        {
-            shipName: 'Submarine',
-            size: 3,
-        },
-        {
-            shipName: 'Patrol Boat',
-            size: 2,
-        },
-    ]
+    const player = Player()
+    const ships = player.getShips()
+
     function createStartingPage() {
         document.body.textContent = ''
 
@@ -68,7 +50,10 @@ function DOM() {
     function createPlayerBoards() {
         const userInterface = document.querySelector('div.ui')
         const previewBoard = document.querySelector('div.previewBoard')
+        const userInputForm = document.querySelector('form')
         previewBoard.remove()
+        userInputForm.remove()
+
         const boardOne = document.createElement('div')
         boardOne.classList.add('boardOne')
         const boardTwo = document.createElement('div')
@@ -129,13 +114,13 @@ function DOM() {
             descriptionDiv.append(description, xCoorField, yCoorField, dirField)
             form.appendChild(descriptionDiv)
         })
-        const okButton = document.createElement('input')
-        okButton.type = 'submit'
-        okButton.textContent = 'OK'
+        const startButton = document.createElement('button')
+        startButton.textContent = 'Start'
+        startButton.type = 'submit'
         const resetButton = document.createElement('input')
         resetButton.type = 'reset'
 
-        form.append(okButton, resetButton)
+        form.append(startButton, resetButton)
     }
 
     function checkValidPlacement(shipSize, xCoor, yCoor, direction) {

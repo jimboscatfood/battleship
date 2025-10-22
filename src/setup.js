@@ -135,15 +135,66 @@ function Gameboard() {
         receiveAttack,
         checkIfAllSunk,
         getBoard,
+        checkValidPlacement,
     }
 }
 
 function Player() {
     const board = Gameboard()
+    const ships = [
+        {
+            shipName: 'Carrier',
+            size: 5,
+        },
+        {
+            shipName: 'Battleship',
+            size: 4,
+        },
+        {
+            shipName: 'Destroyer',
+            size: 3,
+        },
+        {
+            shipName: 'Submarine',
+            size: 3,
+        },
+        {
+            shipName: 'Patrol Boat',
+            size: 2,
+        },
+    ]
+
+    function getShips() {
+        return ships
+    }
+
+    function setRandomBoard() {
+        ships.forEach((ship) => {
+            while (true) {
+                const randomX = Math.floor(Math.random() * 10)
+                const randomY = Math.floor(Math.random() * 10)
+                const randomDir =
+                    Math.floor(Math.random() * 2) === 0 ? 'x' : 'y'
+                if (
+                    board.checkValidPlacement(
+                        ship.size,
+                        [randomX, randomY],
+                        randomDir
+                    )
+                ) {
+                    board.placeShip(ship.size, [randomX, randomY], randomDir)
+                    break
+                }
+            }
+        })
+    }
 
     return {
         getPlayerBoard: board.getBoard,
         placeShip: board.placeShip,
         receiveAttack: board.receiveAttack,
+        getShips,
+        setRandomBoard,
+        checkIfAllSunk: board.checkIfAllSunk,
     }
 }
