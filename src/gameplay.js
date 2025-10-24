@@ -41,7 +41,7 @@ function GameplayControl(playerName = 'Jimmy') {
             const shipCells = document.querySelectorAll(
                 'div.previewBoard>div.ship'
             )
-            const userInputs = document.querySelectorAll('div.userInput>div')
+            const userInputs = document.querySelectorAll('div.userInput div')
             if (shipCells.length === sumOfShipSize) {
                 e.preventDefault()
                 userInputs.forEach((div) => {
@@ -60,7 +60,8 @@ function GameplayControl(playerName = 'Jimmy') {
                 showGameboards()
                 gameFlow()
             } else {
-                return false
+                e.preventDefault()
+                return
             }
         })
     }
@@ -99,24 +100,37 @@ function GameplayControl(playerName = 'Jimmy') {
 
     function gameFlow() {
         const boardTwo = document.querySelector('div.boardTwo')
-        boardTwo.addEventListener('click', (e) => {
+        boardTwo.addEventListener('click', function gameLogic(e) {
             const targetCell = e.target
             const targetCellCoor = [
                 targetCell.getAttribute('column'),
                 targetCell.getAttribute('row'),
             ]
-            playerTwo.receiveAttack(targetCellCoor)
-            domControl.renderGameboards(
-                playerOne.getPlayerBoard(),
-                playerTwo.getPlayerBoard()
-            )
-            switchTurn()
-            playerOne.receiveAttack(getRandomCoor())
-            domControl.renderGameboards(
-                playerOne.getPlayerBoard(),
-                playerTwo.getPlayerBoard()
-            )
-            switchTurn()
+            //check if cell has already been attacked
+            const playerTwoBoard = playerTwo.getPlayerBoard()
+            if (
+                playerTwoBoard[targetCellCoor[1]][targetCellCoor[0]] !== true &&
+                playerTwoBoard[targetCellCoor[1]][targetCellCoor[0]] !== false
+            ) {
+                playerTwo.receiveAttack(targetCellCoor)
+                if (playerTwo.checkIfAllSunk()) {
+                    boardTwo.removeEventListener('click', gameLogic)
+                }
+                domControl.renderGameboards(
+                    playerOne.getPlayerBoard(),
+                    playerTwo.getPlayerBoard()
+                )
+                switchTurn()
+                playerOne.receiveAttack(getRandomCoor())
+                if (playerOne.checkIfAllSunk()) {
+                    boardTwo.removeEventListener('click', gameLogic)
+                }
+                domControl.renderGameboards(
+                    playerOne.getPlayerBoard(),
+                    playerTwo.getPlayerBoard()
+                )
+                switchTurn()
+            }
         })
     }
 

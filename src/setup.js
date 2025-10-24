@@ -108,7 +108,7 @@ function Gameboard() {
             targetObj.hit()
             //REPLACE ship object with true, translating to a hit
             board[yCoor][xCoor] = true
-        } else {
+        } else if (targetObj === null) {
             //REPLACE null object with false, translating to a miss
             board[yCoor][xCoor] = false
         }
