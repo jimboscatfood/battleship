@@ -58,6 +58,7 @@ function GameplayControl(playerName = 'Jimmy') {
                 })
                 playerTwo.setRandomBoard()
                 domControl.createPlayerBoards()
+                domControl.addInGameDOM()
                 showGameboards()
                 gameFlow()
             } else {

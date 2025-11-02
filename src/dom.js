@@ -128,6 +128,19 @@ function DOM() {
         form.append(randomButton, startButton, resetButton)
     }
 
+    function addInGameDOM() {
+        const inGameUI = document.createElement('div')
+        document.body.appendChild(inGameUI)
+        const gameMessageBox = document.createElement('p')
+        gameMessageBox.classList.add('message')
+        inGameUI.appendChild(gameMessageBox)
+
+        const restartBtn = document.createElement('button')
+        restartBtn.classList.add('restartBtn')
+        restartBtn.textContent = 'Restart Game'
+        inGameUI.appendChild(restartBtn)
+    }
+
     function checkPreviewValidPlacement(shipSize, xCoor, yCoor, direction) {
         const previewBoard = document.querySelector('div.previewBoard')
         const firstCell = previewBoard.firstChild
@@ -259,5 +272,6 @@ function DOM() {
         setUpPreview,
         updatePreview,
         randomisePlacementInput,
+        addInGameDOM,
     }
 }
