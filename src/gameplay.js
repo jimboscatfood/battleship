@@ -27,6 +27,7 @@ function GameplayControl(playerName = 'Jimmy') {
         domControl.createStartingPage()
         domControl.setUpPreview(previewBoard.getBoard())
         domControl.addInputDOM()
+        randomisePlacement()
     }
 
     function updatePreviewBoard() {
@@ -131,6 +132,14 @@ function GameplayControl(playerName = 'Jimmy') {
                 )
                 switchTurn()
             }
+        })
+    }
+
+    function randomisePlacement() {
+        const randomButton = document.querySelector('button.randomBtn')
+        randomButton.addEventListener('click', (e) => {
+            e.preventDefault()
+            domControl.randomisePlacementInput()
         })
     }
 

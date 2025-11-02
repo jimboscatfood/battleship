@@ -114,16 +114,21 @@ function DOM() {
             descriptionDiv.append(description, xCoorField, yCoorField, dirField)
             form.appendChild(descriptionDiv)
         })
+
+        const randomButton = document.createElement('button')
+        randomButton.textContent = 'Randomise Ship Placements'
+        randomButton.classList.add('randomBtn')
         const startButton = document.createElement('button')
         startButton.textContent = 'Start'
         startButton.type = 'submit'
-        const resetButton = document.createElement('input')
+        const resetButton = document.createElement('button')
+        resetButton.textContent = 'Reset'
         resetButton.type = 'reset'
 
-        form.append(startButton, resetButton)
+        form.append(randomButton, startButton, resetButton)
     }
 
-    function checkValidPlacement(shipSize, xCoor, yCoor, direction) {
+    function checkPreviewValidPlacement(shipSize, xCoor, yCoor, direction) {
         const previewBoard = document.querySelector('div.previewBoard')
         const firstCell = previewBoard.firstChild
         const lastCell = previewBoard.lastChild
@@ -134,7 +139,7 @@ function DOM() {
         //first condition the starting coordinate of ship must be within the board
         if (xCoor >= xMin && yCoor >= yMin) {
             //second condition the whole ship is within the board
-            if (direction === 'x' && xCoor + shipSize <= xMax + 1) {
+            if (direction === 'x' && xCoor + shipSize - 1 <= xMax) {
                 //third condition the ship must not overlap with existing ships
                 for (let i = 0; i < shipSize; i++) {
                     const cell = previewBoard.querySelector(
@@ -145,7 +150,7 @@ function DOM() {
                     }
                 }
                 return true
-            } else if (direction === 'y' && yCoor + shipSize <= yMax + 1) {
+            } else if (direction === 'y' && yCoor + shipSize - 1 <= yMax) {
                 for (let j = 0; j < shipSize; j++) {
                     const cell = previewBoard.querySelector(
                         `[row='${yCoor + j}'][column='${xCoor}']`
@@ -181,7 +186,7 @@ function DOM() {
             if (
                 Number.isInteger(startX) &&
                 Number.isInteger(startY) &&
-                checkValidPlacement(shipSize, startX, startY, direction)
+                checkPreviewValidPlacement(shipSize, startX, startY, direction)
             ) {
                 if (direction === 'x') {
                     for (let i = 0; i < shipSize; i++) {
@@ -202,6 +207,50 @@ function DOM() {
         })
     }
 
+    function randomisePlacementInput() {
+        const inputDivs = document.querySelectorAll('div.userInput div')
+
+        //clear all input fields first
+        const allInputs = document.querySelectorAll('input')
+        allInputs.forEach((input) => {
+            input.value = ''
+        })
+        const allSelects = document.querySelectorAll('select')
+        allSelects.forEach((select) => {
+            //default direction is x
+            select.value = 'x'
+        })
+
+        inputDivs.forEach((div) => {
+            while (true) {
+                const startXInput = div.querySelector('p:nth-child(2)>input')
+                const startYInput = div.querySelector('p:nth-child(3)>input')
+                const direction = div.querySelector('select')
+                const shipSize = ships[div.getAttribute('shipNo')].size
+
+                const randomX = Math.floor(Math.random() * 10)
+                const randomY = Math.floor(Math.random() * 10)
+                const randomDir =
+                    Math.floor(Math.random() * 2) === 0 ? 'x' : 'y'
+
+                if (
+                    checkPreviewValidPlacement(
+                        shipSize,
+                        randomX,
+                        randomY,
+                        randomDir
+                    )
+                ) {
+                    startXInput.value = randomX
+                    startYInput.value = randomY
+                    direction.value = randomDir
+                    updatePreview()
+                    break
+                }
+            }
+        })
+    }
+
     return {
         createStartingPage,
         createPlayerBoards,
@@ -209,5 +258,6 @@ function DOM() {
         addInputDOM,
         setUpPreview,
         updatePreview,
+        randomisePlacementInput,
     }
 }
