@@ -9,16 +9,16 @@ function GameplayControl(playerName = 'Jimmy') {
     const ships = playerOne.getShips()
     const playerTwo = Player()
 
-    const players = {
-        player1: {
+    const players = [
+        {
             name: `${playerName}`,
             player: playerOne,
         },
-        player2: {
+        {
             name: 'Computer',
             player: playerTwo,
         },
-    }
+    ]
 
     //initialise turn
     let turn = players[0]
@@ -59,6 +59,7 @@ function GameplayControl(playerName = 'Jimmy') {
                 playerTwo.setRandomBoard()
                 domControl.createPlayerBoards()
                 domControl.addInGameDOM()
+                changeGameMessage()
                 showGameboards()
                 gameFlow()
             } else {
@@ -123,7 +124,11 @@ function GameplayControl(playerName = 'Jimmy') {
                     playerTwo.getPlayerBoard()
                 )
                 switchTurn()
-                playerOne.receiveAttack(getRandomCoor())
+                changeGameMessage()
+                setTimeout(
+                    () => playerOne.receiveAttack(getRandomCoor()),
+                    10000
+                )
                 if (playerOne.checkIfAllSunk()) {
                     boardTwo.removeEventListener('click', gameLogic)
                 }
@@ -132,8 +137,19 @@ function GameplayControl(playerName = 'Jimmy') {
                     playerTwo.getPlayerBoard()
                 )
                 switchTurn()
+                changeGameMessage()
             }
         })
+    }
+
+    function changeGameMessage() {
+        const messageBox = document.querySelector('p.message')
+        if (turn.player.checkIfAllSunk()) {
+            switchTurn()
+            messageBox.textContent = `Game over. ${turn.name} wins.`
+        } else {
+            messageBox.textContent = `${turn.name}'s turn.`
+        }
     }
 
     function randomisePlacement() {
