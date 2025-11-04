@@ -125,10 +125,7 @@ function GameplayControl(playerName = 'Jimmy') {
                 )
                 switchTurn()
                 changeGameMessage()
-                setTimeout(
-                    () => playerOne.receiveAttack(getRandomCoor()),
-                    10000
-                )
+                playerOne.receiveAttack(getRandomCoor())
                 if (playerOne.checkIfAllSunk()) {
                     boardTwo.removeEventListener('click', gameLogic)
                 }
@@ -160,12 +157,15 @@ function GameplayControl(playerName = 'Jimmy') {
         })
     }
 
-    //pseudocode for game flow logic
-    //1. real player place their ships, computer player generate ship placement automatically
-    //2. render the initial boards before game start
-    //3. game start, real player's turn to click on the computer player's board to attack
-    //4. update computer player's board
-    //5. switch to computer player's turn, computer player randomly attacked the real player's board
+    function restartGame() {
+        if (confirm('Do you want to start a new game?')) {
+            initialisePage()
+            updatePreviewBoard()
+            gameStart()
+        } else {
+            return
+        }
+    }
 
     return {
         initialisePage,
@@ -173,5 +173,6 @@ function GameplayControl(playerName = 'Jimmy') {
         gameFlow,
         updatePreviewBoard,
         gameStart,
+        restartGame,
     }
 }
