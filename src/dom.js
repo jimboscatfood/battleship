@@ -27,6 +27,7 @@ function DOM() {
             inputDiv.appendChild(dragSection)
 
             const itemContainer = document.createElement('div')
+            itemContainer.setAttribute('draggable', 'true')
             itemContainer.classList.add(`drag`)
             itemContainer.classList.add(`${direction}`)
             for (let i = 0; i < shipSize; i++) {
@@ -306,12 +307,22 @@ function DOM() {
         })
     }
 
+    function resetPreview() {
+        const previewBoardCells = document.querySelectorAll(
+            'div.previewBoard>div'
+        )
+        previewBoardCells.forEach((cell) => {
+            cell.classList.remove('ship')
+        })
+    }
+
     return {
         createStartingPage,
         createPlayerBoards,
         renderGameboards,
         addInputDOM,
         setUpPreview,
+        resetPreview,
         updatePreview,
         randomisePlacementInput,
         addInGameDOM,

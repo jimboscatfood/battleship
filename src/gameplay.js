@@ -28,6 +28,7 @@ function GameplayControl(playerName = 'Jimmy') {
         domControl.setUpPreview(previewBoard.getBoard())
         domControl.addInputDOM()
         randomisePlacement()
+        resetPlacement()
     }
 
     function updatePreviewBoard() {
@@ -155,6 +156,11 @@ function GameplayControl(playerName = 'Jimmy') {
             e.preventDefault()
             domControl.randomisePlacementInput()
         })
+    }
+
+    function resetPlacement() {
+        const resetButton = document.querySelector('button[type=reset]')
+        resetButton.addEventListener('click', domControl.resetPreview)
     }
 
     function restartGame() {
