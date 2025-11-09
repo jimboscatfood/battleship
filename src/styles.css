@@ -1,3 +1,8 @@
+body {
+    display:flex;
+    flex-direction:row;
+    gap:50px;
+}
 .ui {
     display:flex;
     flex-direction: row;
@@ -6,8 +11,8 @@
 
 .previewBoard {
     display: grid;
-    grid-template-columns: repeat(10, minmax(50px, 1fr));
-    grid-template-rows: repeat(10, minmax(50px, 1fr));
+    grid-template-columns: repeat(10, 50px);
+    grid-template-rows: repeat(10, 50px);
 }
 
 .boardOne, .boardTwo {
@@ -22,4 +27,33 @@
 
 .ship {
     background-color: purple;
+}
+
+form > div {
+    border: 1px solid black;
+    padding: 5px
+}
+
+.drag {
+    display:flex;
+}
+
+.drag > div {
+    border: 1px black solid;
+    height:40px;
+    width:40px;
+}
+
+div.userInput>form>div {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+.drag.x {
+    flex-direction: row;
+}
+
+.drag.y {
+    flex-direction: column;
 }

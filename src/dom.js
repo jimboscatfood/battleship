@@ -17,6 +17,42 @@ function DOM() {
         document.body.appendChild(userInputDiv)
     }
 
+    function createDragItems() {
+        const inputDivs = document.querySelectorAll('div.userInput>form>div')
+
+        inputDivs.forEach((inputDiv) => {
+            const shipSize = ships[inputDiv.getAttribute('shipNo')].size
+            const direction = inputDiv.querySelector('select').value
+            const dragSection = document.createElement('div')
+            inputDiv.appendChild(dragSection)
+
+            const itemContainer = document.createElement('div')
+            itemContainer.classList.add(`drag`)
+            itemContainer.classList.add(`${direction}`)
+            for (let i = 0; i < shipSize; i++) {
+                const shipCell = document.createElement('div')
+                itemContainer.appendChild(shipCell)
+            }
+            dragSection.appendChild(itemContainer)
+        })
+    }
+
+    function updateDragItem() {
+        const dragItems = document.querySelectorAll('div.drag')
+        dragItems.forEach((item, index) => {
+            const selects = document.querySelectorAll('select')
+            const direction = selects[index].value
+            //change item class based on its input container's select value so that its style changes
+            if (direction === 'y' && item.classList.contains('x')) {
+                item.classList.remove('x')
+                item.classList.add('y')
+            } else {
+                item.classList.remove('y')
+                item.classList.add('x')
+            }
+        })
+    }
+
     function createBoard(board, boardDiv) {
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
@@ -111,7 +147,10 @@ function DOM() {
             dirInput.append(optionX, optionY)
             dirField.append(dirLabel, dirInput)
 
-            descriptionDiv.append(description, xCoorField, yCoorField, dirField)
+            const inputDiv = document.createElement('div')
+            inputDiv.classList.add('input')
+            inputDiv.append(description, xCoorField, yCoorField, dirField)
+            descriptionDiv.appendChild(inputDiv)
             form.appendChild(descriptionDiv)
         })
 
@@ -126,6 +165,8 @@ function DOM() {
         resetButton.type = 'reset'
 
         form.append(randomButton, startButton, resetButton)
+
+        createDragItems()
     }
 
     function addInGameDOM() {
@@ -178,7 +219,7 @@ function DOM() {
     }
 
     function updatePreview() {
-        const inputDivs = document.querySelectorAll('div.userInput div')
+        const inputDivs = document.querySelectorAll('div.userInput>form>div')
         const previewBoardCells = document.querySelectorAll(
             'div.previewBoard>div'
         )
@@ -218,10 +259,11 @@ function DOM() {
                 }
             }
         })
+        updateDragItem()
     }
 
     function randomisePlacementInput() {
-        const inputDivs = document.querySelectorAll('div.userInput div')
+        const inputDivs = document.querySelectorAll('div.userInput>form>div')
 
         //clear all input fields first
         const allInputs = document.querySelectorAll('input')
