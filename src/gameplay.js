@@ -2,7 +2,7 @@ import { DOM } from './dom'
 import { Player, Gameboard } from './setup'
 export { GameplayControl }
 
-function GameplayControl(playerName = 'Player 1') {
+function GameplayControl() {
     const domControl = DOM()
     const previewBoard = Gameboard()
     const playerOne = Player()
@@ -11,7 +11,7 @@ function GameplayControl(playerName = 'Player 1') {
 
     const players = [
         {
-            name: `${playerName}`,
+            name: `Player 1`,
             player: playerOne,
         },
         {
@@ -42,12 +42,13 @@ function GameplayControl(playerName = 'Player 1') {
     function gameStart() {
         const startBtn = document.querySelector("button[type='submit']")
         startBtn.addEventListener('click', (e) => {
+            players[0].name = document.querySelector('div.name>input').value
             const sumOfShipSize = ships.reduce((sum, cur) => sum + cur.size, 0)
             const shipCells = document.querySelectorAll(
                 'div.previewBoard>div.ship'
             )
             const userInputs = document.querySelectorAll(
-                'div.userInput>form>div'
+                'div.userInput>form>div[shipno]'
             )
             if (shipCells.length === sumOfShipSize) {
                 e.preventDefault()

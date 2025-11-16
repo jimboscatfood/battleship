@@ -18,7 +18,9 @@ function DOM() {
     }
 
     function createDragItems() {
-        const inputDivs = document.querySelectorAll('div.userInput>form>div')
+        const inputDivs = document.querySelectorAll(
+            'div.userInput>form>div[shipno]'
+        )
 
         inputDivs.forEach((inputDiv) => {
             const shipSize = ships[inputDiv.getAttribute('shipNo')].size
@@ -121,6 +123,16 @@ function DOM() {
     function addInputDOM() {
         const userInputDiv = document.querySelector('div.userInput')
         const form = document.createElement('form')
+
+        const playerNameBox = document.createElement('div')
+        playerNameBox.classList.add('name')
+        const playNameLabel = document.createElement('label')
+        playNameLabel.textContent = `Player's name: `
+        const playerNameInput = document.createElement('input')
+        playerNameInput.setAttribute('required', '')
+        playerNameBox.append(playNameLabel, playerNameInput)
+        form.appendChild(playerNameBox)
+
         userInputDiv.appendChild(form)
 
         ships.forEach((ship, index) => {
@@ -230,7 +242,9 @@ function DOM() {
     }
 
     function updatePreview() {
-        const inputDivs = document.querySelectorAll('div.userInput>form>div')
+        const inputDivs = document.querySelectorAll(
+            'div.userInput>form>div[shipno]'
+        )
         const previewBoardCells = document.querySelectorAll(
             'div.previewBoard>div'
         )
@@ -273,10 +287,12 @@ function DOM() {
     }
 
     function randomisePlacementInput() {
-        const inputDivs = document.querySelectorAll('div.userInput>form>div')
+        const inputDivs = document.querySelectorAll(
+            'div.userInput>form>div[shipno]'
+        )
 
         //clear all input fields first
-        const allInputs = document.querySelectorAll('input')
+        const allInputs = document.querySelectorAll('div[shipno]>input')
         allInputs.forEach((input) => {
             input.value = ''
         })
@@ -326,7 +342,9 @@ function DOM() {
     }
 
     function dragHandler() {
-        const inputDivs = document.querySelectorAll('div.userInput>form>div')
+        const inputDivs = document.querySelectorAll(
+            'div.userInput>form>div[shipno]'
+        )
         const dropItems = document.querySelectorAll('div.drag')
 
         let cellNum
@@ -391,7 +409,7 @@ function DOM() {
 
                 //create reference to the corresponding userInput box
                 const inputDivs = document.querySelectorAll(
-                    'div.userInput>form>div'
+                    'div.userInput>form>div[shipno]'
                 )
                 const selectedEntry = inputDivs[parseInt(itemData.shipNum)]
                 const startXInput = selectedEntry.querySelector(
