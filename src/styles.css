@@ -26,7 +26,7 @@ body {
 }
 
 .ship {
-    background-color: purple;
+    background-color: cyan;
 }
 
 form > div {
@@ -40,8 +40,8 @@ form > div {
 
 .drag > div {
     border: 1px black solid;
-    height:40px;
-    width:40px;
+    height: 48px;
+    width:48px;
 }
 
 div.userInput>form>div {

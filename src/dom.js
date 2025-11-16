@@ -32,6 +32,7 @@ function DOM() {
             itemContainer.classList.add(`${direction}`)
             for (let i = 0; i < shipSize; i++) {
                 const shipCell = document.createElement('div')
+                shipCell.setAttribute('data-cell', `${i}`)
                 itemContainer.appendChild(shipCell)
             }
             dragSection.appendChild(itemContainer)
@@ -40,14 +41,14 @@ function DOM() {
 
     function updateDragItem() {
         const dragItems = document.querySelectorAll('div.drag')
+        const selects = document.querySelectorAll('select')
         dragItems.forEach((item, index) => {
-            const selects = document.querySelectorAll('select')
             const direction = selects[index].value
             //change item class based on its input container's select value so that its style changes
             if (direction === 'y' && item.classList.contains('x')) {
                 item.classList.remove('x')
                 item.classList.add('y')
-            } else {
+            } else if (direction === 'x' && item.classList.contains('y')) {
                 item.classList.remove('y')
                 item.classList.add('x')
             }
@@ -82,6 +83,12 @@ function DOM() {
         userInterface.appendChild(previewBoardDiv)
 
         createBoard(previewBoard, previewBoardDiv)
+        const previewBoardCells = document.querySelectorAll(
+            'div.previewBoard>div'
+        )
+        previewBoardCells.forEach((cell) => {
+            cell.classList.add('dropZone')
+        })
     }
 
     function createPlayerBoards() {
@@ -260,7 +267,6 @@ function DOM() {
                 }
             }
         })
-        updateDragItem()
     }
 
     function randomisePlacementInput() {
@@ -316,6 +322,99 @@ function DOM() {
         })
     }
 
+    function dragHandler() {
+        const inputDivs = document.querySelectorAll('div.userInput>form>div')
+        const dropItems = document.querySelectorAll('div.drag')
+
+        let cellNum
+
+        dropItems.forEach((item) => {
+            item.addEventListener('mousedown', (e) => {
+                cellNum = parseInt(e.target.getAttribute('data-cell'))
+            })
+        })
+
+        dropItems.forEach((item, index) => {
+            item.addEventListener('dragstart', (e) => {
+                //when drag starts, set the data that needs to be passed into an object for the drop zone to "retrieve"
+                //the drag item data will be translated to userInput input entry when the drag ends
+                //when hover on drop zone, show color
+                //set up logic that does not allow the same ship to be placed more than once, this can be done by changing the input fields whenever a valid drag action is done
+                const selectedEntry = inputDivs[index]
+                const directionInput =
+                    selectedEntry.querySelector('select').value
+
+                const shipSize =
+                    ships[selectedEntry.getAttribute('shipNo')].size
+                e.dataTransfer.setData(
+                    'application/json',
+                    JSON.stringify({
+                        targetCellNum: cellNum,
+                        direction: directionInput,
+                        size: shipSize,
+                        shipNum: index,
+                    })
+                )
+            })
+        })
+    }
+
+    function dropHandler() {
+        const dropZoneCells = document.querySelectorAll('div.dropZone')
+        dropZoneCells.forEach((dropZone) => {
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault()
+            })
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault()
+                //see which cell it is dropping into
+                const dropX = parseInt(e.target.getAttribute('column'))
+                const dropY = parseInt(e.target.getAttribute('row'))
+
+                //retrieve data from drop item
+                const itemData = JSON.parse(
+                    e.dataTransfer.getData('application/json')
+                )
+                const direction = itemData.direction
+                const startX =
+                    direction === 'x'
+                        ? dropX - parseInt(itemData.targetCellNum)
+                        : dropX
+                const startY =
+                    direction === 'y'
+                        ? dropY - parseInt(itemData.targetCellNum)
+                        : dropY
+                const shipSize = parseInt(itemData.size)
+
+                //create reference to the corresponding userInput box
+                const inputDivs = document.querySelectorAll(
+                    'div.userInput>form>div'
+                )
+                const selectedEntry = inputDivs[parseInt(itemData.shipNum)]
+                const startXInput = selectedEntry.querySelector(
+                    'p:nth-child(2)>input'
+                )
+                const startYInput = selectedEntry.querySelector(
+                    'p:nth-child(3)>input'
+                )
+                const directionInput = selectedEntry.querySelector('select')
+                if (
+                    checkPreviewValidPlacement(
+                        shipSize,
+                        startX,
+                        startY,
+                        direction
+                    )
+                ) {
+                    startXInput.value = startX
+                    startYInput.value = startY
+                    directionInput.value = direction
+                    updatePreview()
+                }
+            })
+        })
+    }
+
     return {
         createStartingPage,
         createPlayerBoards,
@@ -324,7 +423,10 @@ function DOM() {
         setUpPreview,
         resetPreview,
         updatePreview,
+        updateDragItem,
         randomisePlacementInput,
         addInGameDOM,
+        dragHandler,
+        dropHandler,
     }
 }

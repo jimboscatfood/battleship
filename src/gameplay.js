@@ -29,11 +29,14 @@ function GameplayControl(playerName = 'Jimmy') {
         domControl.addInputDOM()
         randomisePlacement()
         resetPlacement()
+        domControl.dragHandler()
+        domControl.dropHandler()
     }
 
     function updatePreviewBoard() {
         const inputDiv = document.querySelector('div.userInput')
         inputDiv.addEventListener('change', domControl.updatePreview)
+        inputDiv.addEventListener('change', domControl.updateDragItem)
     }
 
     function gameStart() {
@@ -43,7 +46,9 @@ function GameplayControl(playerName = 'Jimmy') {
             const shipCells = document.querySelectorAll(
                 'div.previewBoard>div.ship'
             )
-            const userInputs = document.querySelectorAll('div.userInput div')
+            const userInputs = document.querySelectorAll(
+                'div.userInput>form>div'
+            )
             if (shipCells.length === sumOfShipSize) {
                 e.preventDefault()
                 userInputs.forEach((div) => {
