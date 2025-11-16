@@ -64,11 +64,14 @@ function DOM() {
                 if (board[i][j] === null) {
                     cell.textContent = ' '
                 } else if (board[i][j] === true) {
-                    cell.textContent = 'H'
+                    cell.classList.add('hit')
                 } else if (board[i][j] === false) {
                     cell.textContent = 'X'
+                    cell.classList.add('miss')
                 } else {
-                    cell.textContent = 'S'
+                    if (boardDiv.classList.contains('boardOne')) {
+                        cell.classList.add('ship')
+                    }
                 }
                 boardDiv.appendChild(cell)
             }

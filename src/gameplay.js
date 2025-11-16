@@ -2,7 +2,7 @@ import { DOM } from './dom'
 import { Player, Gameboard } from './setup'
 export { GameplayControl }
 
-function GameplayControl(playerName = 'Jimmy') {
+function GameplayControl(playerName = 'Player 1') {
     const domControl = DOM()
     const previewBoard = Gameboard()
     const playerOne = Player()
