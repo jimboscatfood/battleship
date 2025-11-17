@@ -40,8 +40,8 @@ function GameplayControl() {
     }
 
     function gameStart() {
-        const startBtn = document.querySelector("button[type='submit']")
-        startBtn.addEventListener('click', (e) => {
+        const form = document.querySelector('form')
+        form.addEventListener('submit', (e) => {
             players[0].name = document.querySelector('div.name>input').value
             const sumOfShipSize = ships.reduce((sum, cur) => sum + cur.size, 0)
             const shipCells = document.querySelectorAll(
@@ -161,6 +161,7 @@ function GameplayControl() {
         randomButton.addEventListener('click', (e) => {
             e.preventDefault()
             domControl.randomisePlacementInput()
+            domControl.updateDragItem()
         })
     }
 
